@@ -4,8 +4,10 @@
     <span>powerd by utano320</span>
 
     <div id="imagebox">
-      <ImageItem v-for="i in maxImageCount" :key="i" :index="i" :box-size="300" />
+      <ImageItem v-for="i in maxImageCount" :key="i" :index="i" :box-size="100" />
     </div>
+
+
   </div>
 </template>
 
@@ -17,8 +19,7 @@ import ImageItem from './components/ImageItem.vue';
 export default {
   data() {
     return {
-      maxImageCount: 50,
-      count: 0
+      maxImageCount: 50
     };
   },
   components: {
