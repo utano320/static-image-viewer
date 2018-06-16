@@ -1,4 +1,7 @@
 node_modules
 dist/**/*.js
+dist/**/*.jpg
 coverage
 .env
+.DS_Store
+yarn-error.log

@@ -1,26 +1,35 @@
 <template>
-  <div class="example">
-    <p>{{ msg }}</p>
-    <p>API HOST : {{ apiHost }}</p>
+  <div id="app">
+    <h1>Static Image Viewer</h1>
+    <span>powerd by utano320</span>
+
+    <div id="imagebox">
+      <ImageItem v-for="i in maxImageCount" :key="i" :index="i" :box-size="300" />
+    </div>
   </div>
 </template>
 
 <script>
+import milligram from 'milligram';
+import _ from 'lodash';
+import ImageItem from './components/ImageItem.vue';
+
 export default {
   data() {
     return {
-      msg: 'Hello webpack!!!',
-      apiHost: process.env.API_HOST
+      maxImageCount: 50,
+      count: 0
     };
+  },
+  components: {
+    ImageItem
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.example {
-  color: red;
-  p {
-    color: blue;
-  }
+#imagebox {
+  display: flex;
+  flex-flow: wrap;
 }
 </style>
