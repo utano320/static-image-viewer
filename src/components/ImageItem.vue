@@ -1,7 +1,20 @@
 <template>
-  <div v-show="!isFixed || isExists" class="image-wrapper" :style="imageWrapperStyle()">
+  <div
+    v-show="!isFixed || isExists"
+    class="image-wrapper"
+    :style="imageWrapperStyle()"
+    @mouseover="onMouseOver(index, $event)"
+    @mouseout="onMouseOut()"
+    @click="onClick(index, $event)"
+  >
     <transition>
-      <img v-show="isFixed" :id="id()" :src="'images/' + imageFileName()" :alt="imageFileName()" @load="onLoad" @error="onError" />
+      <img
+        v-show="isFixed"
+        :id="id()"
+        :src="'images/' + imageFileName()"
+        :alt="imageFileName()"
+        @load="onLoad" @error="onError"
+      />
     </transition>
   </div>
 </template>
@@ -16,6 +29,26 @@ export default {
     boxSize: {
       type: Number,
       default: 100
+    },
+    hoverIndex: {
+      type: Number,
+      default: 0
+    },
+    selectIndex: {
+      type: Number,
+      default: 0
+    },
+    onMouseOver: {
+      type: Function,
+      default: null
+    },
+    onMouseOut: {
+      type: Function,
+      default: null
+    },
+    onClick: {
+      type: Function,
+      default: null
     }
   },
   data() {
@@ -31,8 +64,14 @@ export default {
       return {
         width: this.boxSize + 'px',
         height: this.boxSize + 'px',
-        opacity: this.isExists ? 1 : 0
+        opacity: this.isExists ? (this.hoverIndex === 0 || this.isHover() ? 1 : 0.5) : 0
       };
+    },
+    isHover() {
+      return this.hoverIndex === this.index;
+    },
+    isSelect() {
+      return this.selectIndex === this.index;
     },
     id() {
       return 'image-item_' + this.index;
@@ -45,9 +84,6 @@ export default {
 
       let w = el.width;
       let h = el.height;
-
-      el.width = this.boxSize;
-      el.height = this.boxSize;
 
       if (w > this.boxSize && w > h) {
         // width が boxSize を超えていて、横長の画像の場合
@@ -85,10 +121,14 @@ export default {
 
 <style lang="scss" scoped>
 .image-wrapper {
-  border-radius: 0.2em;
+  // border-radius: 0.2em;
   background-color: #efefef;
   margin: 10px;
   position: relative;
+  cursor: pointer;
+  &:hover {
+    background-color: #ccc;
+  }
   img {
     position: absolute;
     top: 0;

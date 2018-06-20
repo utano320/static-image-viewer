@@ -1,0 +1,118 @@
+<template>
+  <div id="image-viewer">
+    <div id="image-viewer-bg"></div>
+    <div id="image-viewer-wrapper">
+      <img
+        id="image-viewer-content"
+        src="images/01.jpg"
+        alt="01.jpg"
+        @load="onLoad"
+      />
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    appWidth: {
+      type: Number,
+      default: window.innerWidth
+    },
+    appHeight: {
+      type: Number,
+      default: window.innerHeight
+    }
+  },
+  data() {
+    return {
+      ctW: 0,
+      ctH: 0
+    };
+  },
+  methods: {
+    onLoad() {
+      let ct = document.getElementById('image-viewer-content');
+      this.ctW = ct.clientWidth;
+      this.ctH = ct.clientHeight;
+
+      this.resize();
+    },
+    resize() {
+      let ct = document.getElementById('image-viewer-content');
+      let wp = document.getElementById('image-viewer-wrapper');
+      let wpW = wp.clientWidth;
+      let wpH = wp.clientHeight;
+      let rtW = this.ctW / wpW;
+      let rtH = this.ctH / wpH;
+
+      // console.log(['resize -- ImageViewer(before)', wp.clientWidth, wp.clientHeight, ct.clientWidth, ct.clientHeight]);
+
+      if (rtW < 1 && rtH < 1) {
+        // 拡大縮小の必要なし
+        ct.style.width = '';
+        ct.style.height = '';
+      } else if (rtW > rtH) {
+        // 横長なので width を fit させるように最大化
+        ct.style.width = wpW + 'px';
+        ct.style.height = this.ctH / rtW + 'px';
+      } else {
+        // 縦長なので height を fit さえるように最大化
+        ct.style.width = this.ctW / rtH + 'px';
+        ct.style.height = wpH + 'px';
+      }
+
+      // console.log(['resize -- ImageViewer(after)', wp.clientWidth, wp.clientHeight, ct.clientWidth, ct.clientHeight]);
+    }
+  },
+  watch: {
+    appWidth: function() {
+      this.resize();
+      // console.log(['resize -- ImageViewer:appWidth', this.appWidth, this.appHeight]);
+    },
+    appHeight: function() {
+      this.resize();
+      // console.log(['resize -- ImageViewer:appHeight', this.appWidth, this.appHeight]);
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+#image-viewer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#image-viewer-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #000;
+  opacity: 0.9;
+}
+#image-viewer-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 80%;
+  height: 80%;
+}
+
+#image-viewer-content {
+  position: absolute;
+  // opacity: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+</style>
