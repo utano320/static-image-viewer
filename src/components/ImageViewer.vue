@@ -1,11 +1,11 @@
 <template>
-  <div id="image-viewer">
+  <div v-show="selectIndex != 0" id="image-viewer">
     <div id="image-viewer-bg"></div>
     <div id="image-viewer-wrapper">
       <img
         id="image-viewer-content"
-        src="images/01.jpg"
-        alt="01.jpg"
+        :src="'images/' + imageFileName"
+        :alt="imageFileName"
         @load="onLoad"
       />
     </div>
@@ -15,6 +15,10 @@
 <script>
 export default {
   props: {
+    selectIndex: {
+      type: Number,
+      default: 0
+    },
     appWidth: {
       type: Number,
       default: window.innerWidth
@@ -29,6 +33,11 @@ export default {
       ctW: 0,
       ctH: 0
     };
+  },
+  computed: {
+    imageFileName() {
+      return _.padStart(this.selectIndex, 2, 0) + '.jpg';
+    }
   },
   methods: {
     onLoad() {

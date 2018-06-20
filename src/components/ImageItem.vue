@@ -49,6 +49,10 @@ export default {
     onClick: {
       type: Function,
       default: null
+    },
+    updateImageCount: {
+      type: Function,
+      default: null
     }
   },
   data() {
@@ -82,35 +86,28 @@ export default {
     onLoad(e) {
       let el = e.target;
 
+      let s = this.boxSize * 0.9;
       let w = el.width;
       let h = el.height;
+      let rtW = w / s;
+      let rtH = h / s;
 
-      if (w > this.boxSize && w > h) {
-        // width が boxSize を超えていて、横長の画像の場合
-        //  ------------------------------
-        //   w : h = this.boxSize : x
-        //   w * x = h * this.boxSize
-        //       x = h * this.boxSize / w
-        //       x = h * ratio
-        //  ------------------------------
-        let ratio = this.boxSize / w;
-        el.width = this.boxSize;
-        el.height = h * ratio;
-      } else if (h > this.boxSize && h > w) {
-        // height が boxSize を超えていて、縦長の画像の場合
-        //  ------------------------------
-        //   w : h = x : this.boxSize
-        //   h * x = w * this.boxSize
-        //       x = w * this.boxSize / h
-        //       x = h * ratio
-        //  ------------------------------
-        let ratio = this.boxSize / h;
-        el.width = w * ratio;
-        el.height = this.boxSize;
+      if (rtW < 1 && rtH < 1) {
+        // 拡大縮小の必要なし
+        // 何もしない
+      } else if (rtW > rtH) {
+        // 横長なので width を fit させるように最大化
+        el.width = s;
+        el.height = h / rtW;
+      } else {
+        // 縦長なので height を fit さえるように最大化
+        el.width = w / rtH;
+        el.height = s;
       }
 
       this.isExists = true;
       this.isFixed = true;
+      this.updateImageCount(this.index);
     },
     onError() {
       this.isFixed = true;
@@ -121,9 +118,7 @@ export default {
 
 <style lang="scss" scoped>
 .image-wrapper {
-  // border-radius: 0.2em;
   background-color: #efefef;
-  margin: 10px;
   position: relative;
   cursor: pointer;
   &:hover {
