@@ -26,13 +26,15 @@ export default {
     appHeight: {
       type: Number,
       default: window.innerHeight
+    },
+    imageWidth: {
+      type: Number,
+      default: 0
+    },
+    imageHeight: {
+      type: Number,
+      default: 0
     }
-  },
-  data() {
-    return {
-      ctW: 0,
-      ctH: 0
-    };
   },
   computed: {
     imageFileName() {
@@ -41,10 +43,6 @@ export default {
   },
   methods: {
     onLoad() {
-      let ct = document.getElementById('image-viewer-content');
-      this.ctW = ct.clientWidth;
-      this.ctH = ct.clientHeight;
-
       this.resize();
     },
     resize() {
@@ -52,10 +50,8 @@ export default {
       let wp = document.getElementById('image-viewer-wrapper');
       let wpW = wp.clientWidth;
       let wpH = wp.clientHeight;
-      let rtW = this.ctW / wpW;
-      let rtH = this.ctH / wpH;
-
-      // console.log(['resize -- ImageViewer(before)', wp.clientWidth, wp.clientHeight, ct.clientWidth, ct.clientHeight]);
+      let rtW = this.imageWidth / wpW;
+      let rtH = this.imageHeight / wpH;
 
       if (rtW < 1 && rtH < 1) {
         // 拡大縮小の必要なし
@@ -64,24 +60,20 @@ export default {
       } else if (rtW > rtH) {
         // 横長なので width を fit させるように最大化
         ct.style.width = wpW + 'px';
-        ct.style.height = this.ctH / rtW + 'px';
+        ct.style.height = this.imageHeight / rtW + 'px';
       } else {
         // 縦長なので height を fit さえるように最大化
-        ct.style.width = this.ctW / rtH + 'px';
+        ct.style.width = this.imageWidth / rtH + 'px';
         ct.style.height = wpH + 'px';
       }
-
-      // console.log(['resize -- ImageViewer(after)', wp.clientWidth, wp.clientHeight, ct.clientWidth, ct.clientHeight]);
     }
   },
   watch: {
     appWidth: function() {
       this.resize();
-      // console.log(['resize -- ImageViewer:appWidth', this.appWidth, this.appHeight]);
     },
     appHeight: function() {
       this.resize();
-      // console.log(['resize -- ImageViewer:appHeight', this.appWidth, this.appHeight]);
     }
   }
 };

@@ -11,7 +11,7 @@
         :box-size="300"
         :hover-index="hoverIndex"
         :select-index="selectIndex"
-        :update-image-count="updateImageCount"
+        :update-image-info="updateImageInfo"
         :on-mouse-over="onMouseOverImageItem"
         :on-mouse-out="onMouseOutImageItem"
         :on-click="onClickImageItem"
@@ -20,6 +20,8 @@
 
     <ImageViewer
       :select-index="selectIndex"
+      :image-width="imageSizeInfo[selectIndex][0]"
+      :image-height="imageSizeInfo[selectIndex][1]"
       :app-width="appWidth"
       :app-height="appHeight"
     />
@@ -42,7 +44,8 @@ export default {
       hoverIndex: 0,
       selectIndex: 0,
       appWidth: window.innerWidth,
-      appHeight: window.innerHeight
+      appHeight: window.innerHeight,
+      imageSizeInfo: [[0, 0]]
     };
   },
   components: {
@@ -58,9 +61,9 @@ export default {
     window.removeEventListener('keydown', this.onKeyDown, false);
   },
   methods: {
-    updateImageCount(index) {
+    updateImageInfo(index, width, height) {
       this.loadedImageCount = Math.max(index, this.loadedImageCount);
-      console.log(['updateImageCount', index]);
+      this.imageSizeInfo[index] = [width, height];
     },
     onMouseOverImageItem(i, e) {
       this.hoverIndex = i;
@@ -95,13 +98,10 @@ export default {
           this.selectIndex--;
         }
       }
-
-      console.log(k);
     },
     onResize: _.debounce(function() {
       this.appWidth = window.innerWidth;
       this.appHeight = window.innerHeight;
-      console.log(['resize -- App', this.appWidth, this.appHeight]);
     }, 100)
   }
 };

@@ -50,7 +50,7 @@ export default {
       type: Function,
       default: null
     },
-    updateImageCount: {
+    updateImageInfo: {
       type: Function,
       default: null
     }
@@ -60,6 +60,8 @@ export default {
       isExists: false,
       isLoaded: false,
       isFixed: false,
+      ctW: 0,
+      ctH: 0,
       opacity: 0
     };
   },
@@ -85,12 +87,14 @@ export default {
     },
     onLoad(e) {
       let el = e.target;
+      this.ctW = el.width;
+      this.ctH = el.height;
+
+      this.updateImageInfo(this.index, el.width, el.height);
 
       let s = this.boxSize * 0.9;
-      let w = el.width;
-      let h = el.height;
-      let rtW = w / s;
-      let rtH = h / s;
+      let rtW = this.ctW / s;
+      let rtH = this.ctH / s;
 
       if (rtW < 1 && rtH < 1) {
         // 拡大縮小の必要なし
@@ -98,16 +102,15 @@ export default {
       } else if (rtW > rtH) {
         // 横長なので width を fit させるように最大化
         el.width = s;
-        el.height = h / rtW;
+        el.height = this.ctH / rtW;
       } else {
         // 縦長なので height を fit さえるように最大化
-        el.width = w / rtH;
+        el.width = this.ctW / rtH;
         el.height = s;
       }
 
       this.isExists = true;
       this.isFixed = true;
-      this.updateImageCount(this.index);
     },
     onError() {
       this.isFixed = true;
